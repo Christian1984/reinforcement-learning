@@ -1,6 +1,8 @@
 from neural_network import NeuralNetwork
 
-nn = NeuralNetwork(2, 4, 1)
-res = nn.predict([1, 2])
+nn = NeuralNetwork(4, 8, 2)
 
-print(res)
+for i in range(10):
+    nn.mutate(0.02)
+    res = nn.predict([0.1, 0.2, 0.3, 0.4])
+    print(res)
