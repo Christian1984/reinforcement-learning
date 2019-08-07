@@ -1,8 +1,18 @@
 import random
+import math
 
 class Layer:
-    def __init__(self, size):
+    @staticmethod
+    def trigonometric_function(self, input):
+        return math.sin(input * math.pi / 2)
+    
+    @staticmethod
+    def linear_function(self, input):
+        return input
+
+    def __init__(self, size, activation_function = linear_function):
         self.size = size
+        self.activation_function = activation_function
 
     def process(self, input):
         if (input < -1):
@@ -10,7 +20,7 @@ class Layer:
         elif (input > 1):
             return 1
         
-        return input
+        return self.activation_function(input)
 
     def copy(self):
         return
