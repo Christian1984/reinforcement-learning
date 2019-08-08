@@ -1,18 +1,19 @@
 import random
 import math
 
-class Layer:
-    @staticmethod
-    def trigonometric_function(self, input):
-        return math.sin(input * math.pi / 2)
-    
-    @staticmethod
-    def linear_function(self, input):
-        return input
+def clamp(input, min = -1, max = 1):
+    return max(min(input, max), min)
 
-    def __init__(self, size, activation_function = linear_function):
+def trigonometricFunction(input):
+    return math.tanh(input * math.pi / 2)
+
+def linearFunction(input):
+    return input
+
+class Layer:
+    def __init__(self, size, activationFunction = trigonometricFunction):
         self.size = size
-        self.activation_function = activation_function
+        self.activationFunction = activationFunction
 
     def process(self, input):
         if (input < -1):
@@ -20,22 +21,63 @@ class Layer:
         elif (input > 1):
             return 1
         
-        return self.activation_function(input)
+        return clamp(self.activationFunction(input))
 
     def copy(self):
-        return
+        return Layer(self.size, self.activationFunction)
 
 class NeuralNetwork:
-    def __init__(self, sizeIn, sizeHidden, sizeOut, weightsInHidden = None, weightsHiddenOut = None):
+    def __init__(self, sizeIn, sizeHidden, sizeOut, 
+        weightsInHidden = None, weightsHiddenOut = None,
+        layerInActivationFunction = linearFunction, 
+        layerHiddenActivationFunction = linearFunction,
+        layerOutActivationFunction = linearFunction):
         self.rand = random.Random()
         
-        self.inLayer = Layer(sizeIn)
-        self.hiddenLayer = Layer(sizeHidden)
-        self.outLayer = Layer(sizeOut)
+        self.inLayer = Layer(sizeIn, layerInActivationFunction)
+        self.hiddenLayer = Layer(sizeHidden, layerHiddenActivationFunction)
+        self.outLayer = Layer(sizeOut, layerOutActivationFunction)
         
         self.weightsInHidden = weightsInHidden if weightsInHidden is not None else self.__generateWeights(sizeIn, sizeHidden)
         self.weightsHiddenOut = weightsHiddenOut if weightsHiddenOut is not None else self.__generateWeights(sizeHidden, sizeOut)
 
+    @staticmethod
+    def combine(brain1, brain2):
+        if (brain1.inLayer.size != brain2.inLayer.size 
+            or brain1.hiddenLayer.size != brain2.hiddenLayer.size
+            or brain1.outLayer.size != brain2.outLayer.size):
+            print("Can't combine brains. Reason: Layer sizes don't match!")
+            return None
+        
+        if (brain1.inLayer.activationFunction != brain2.inLayer.activationFunction):
+            print("Can't combine brains. Reason: Activation functions don't match!")
+            return None
+
+        weightsInHidden = None #TODO
+        weightsHiddenOut = None #TODO
+
+        nn = NeuralNetwork(brain1.inLayer.size, 
+            brain1.hiddenLayer.size, 
+            brain1.outLayer.size,
+            weightsInHidden, weightsHiddenOut,
+            brain1.layerIn.activationFunction,
+            brain1.layerHidden.activationFunction,
+            brain1.layerOut.activationFunction)
+
+        return nn
+
+    def predict(self, input):
+        if (len(input) != self.inLayer.size):
+            return 0
+
+        inOut = self.__processLayer(input, self.inLayer)
+        hiddenIn = self.__processWeights(inOut, self.hiddenLayer, self.weightsInHidden)
+        hiddenOut = self.__processLayer(hiddenIn, self.hiddenLayer)
+        outIn = self.__processWeights(hiddenOut, self.outLayer, self.weightsHiddenOut)
+        out = self.__processLayer(outIn, self.outLayer)
+
+        return out
+    
     def mutate(self, rate):
         totalMutations = self.__mutateWeights(rate, self.weightsInHidden)
         totalMutations += self.__mutateWeights(rate, self.weightsHiddenOut)
@@ -100,18 +142,6 @@ class NeuralNetwork:
             rows.append(row)
 
         return rows
-
-    def predict(self, input):
-        if (len(input) != self.inLayer.size):
-            return 0
-
-        inOut = self.__processLayer(input, self.inLayer)
-        hiddenIn = self.__processWeights(inOut, self.hiddenLayer, self.weightsInHidden)
-        hiddenOut = self.__processLayer(hiddenIn, self.hiddenLayer)
-        outIn = self.__processWeights(hiddenOut, self.outLayer, self.weightsHiddenOut)
-        out = self.__processLayer(outIn, self.outLayer)
-
-        return out
 
     def __processWeights(self, input, layer, weights):
         if len(input) != len(weights) or layer.size != len(weights[0]):
