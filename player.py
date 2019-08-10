@@ -16,7 +16,7 @@ class Player:
         nn = NeuralNetwork.combine(mom.brain, dad.brain)
         return Player(nn, env)
 
-    def step(self):
+    def update(self):
         if (self.alive and self.env):
             #action = self.env.action_space.sample()
             action = self.brain.predict(self.observation)
