@@ -41,31 +41,39 @@ class NeuralNetwork:
         self.weightsInHidden = weightsInHidden if weightsInHidden is not None else self.__generateWeights(sizeIn, sizeHidden)
         self.weightsHiddenOut = weightsHiddenOut if weightsHiddenOut is not None else self.__generateWeights(sizeHidden, sizeOut)
 
+    # static methods
     @staticmethod
-    def combine(brain1, brain2):
-        if (brain1.inLayer.size != brain2.inLayer.size 
-            or brain1.hiddenLayer.size != brain2.hiddenLayer.size
-            or brain1.outLayer.size != brain2.outLayer.size):
-            print("Can't combine brains. Reason: Layer sizes don't match!")
+    def combine(nn1, nn2):
+        if (nn1 is None or nn2 is None):
+            print("Can't combine networks. Reason: One network is Null!")
+            return None
+
+        if (nn1.inLayer.size != nn2.inLayer.size 
+            or nn1.hiddenLayer.size != nn2.hiddenLayer.size
+            or nn1.outLayer.size != nn2.outLayer.size):
+            print("Can't combine networks. Reason: Layer sizes don't match!")
             return None
         
-        if (brain1.inLayer.activationFunction != brain2.inLayer.activationFunction):
-            print("Can't combine brains. Reason: Activation functions don't match!")
+        if (nn1.inLayer.activationFunction != nn2.inLayer.activationFunction):
+            print("Can't combine networks. Reason: Activation functions don't match!")
             return None
 
-        weightsInHidden = None #TODO
-        weightsHiddenOut = None #TODO
+        # combine weights by calculating the avarage of each matrix element
+        weightsInHidden = [[(x + y) / 2 for x, y in zip(row1, row2)] for row1, row2 in zip(nn1.weightsInHidden, nn2.weightsInHidden)]
+        weightsHiddenOut = [[(x + y) / 2 for x, y in zip(row1, row2)] for row1, row2 in zip(nn1.weightsHiddenOut, nn2.weightsHiddenOut)]
 
-        nn = NeuralNetwork(brain1.inLayer.size, 
-            brain1.hiddenLayer.size, 
-            brain1.outLayer.size,
+        # init new brain
+        nn = NeuralNetwork(nn1.inLayer.size, 
+            nn1.hiddenLayer.size, 
+            nn1.outLayer.size,
             weightsInHidden, weightsHiddenOut,
-            brain1.layerIn.activationFunction,
-            brain1.layerHidden.activationFunction,
-            brain1.layerOut.activationFunction)
+            nn1.inLayer.activationFunction,
+            nn1.hiddenLayer.activationFunction,
+            nn1.outLayer.activationFunction)
 
         return nn
 
+    # public methods
     def predict(self, input):
         if (len(input) != self.inLayer.size):
             return 0
@@ -101,7 +109,7 @@ class NeuralNetwork:
             "weightsHiddenOut": self.weightsHiddenOut
         }
 
-    ## private methods
+    # private methods
     def __generateWeights(self, numIn, numOut):
         rows = []
 
