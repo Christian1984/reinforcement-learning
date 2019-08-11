@@ -1,2 +1,2 @@
-def clamp(input, min = -1, max = 1):
-    return max(min(input, max), min)
+def clamp(input, minVal = -1, maxVal = 1):
+    return max(min(input, maxVal), minVal)

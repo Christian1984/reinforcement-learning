@@ -1,33 +1,43 @@
 import gym
 import time
 
+from population import Population
+
 start = time.time()
 
+render = False
+
+populationSize = 1000
+episodes = 1000
+maxSteps = 1000
 envs = []
 
-for _ in range(1000):
-    envs.append([gym.make('CartPole-v0'), 0, False])
+for _ in range(populationSize):
+    envs.append(gym.make('CartPole-v0'))
 
-for episode in range(10):
+population = Population(envs)
 
-    for env in envs:
-        env[1] = env[0].reset()
+for episode in range(episodes):
+    #print("===================================")
+    #print("Starting Episode {}:".format(episode))
 
-    for t in range(100):
-        for env in envs:
-            if (not env[2]):
-                #env[0].render()
-                print (env[1])
-                observation, reward, done, info = env[0].step(env[0].action_space.sample())
-                env[1] = observation
-                env[2] = done
-                #observation, reward, done, info = env.step(0) #left
-                #observation, reward, done, info = env.step(1) #right
+    for step in range(maxSteps):
+        if population.isAlive():
+            # update
+            population.update()
 
-                if (done):
-                    print ("Episode {} finished in {} steps.".format(episode + 1, t + 1))
+            if render:
+                population.render()
+
+            #if step % 10 == 0:
+            #    print("Step {}: {} players still alive.".format(step, population.alive))
+        else:
+            # evolve and restart
+            print("Episode: {} | {} ".format(episode + 1, population.stats()))
+            population.evolve()
+            break
 
 for env in envs:
     env[0].close()
 
-print('done! execution took {} seconds'.format(time.time() - start))
+print("Execution finished! Took {} seconds to complete".format(time.time() - start))

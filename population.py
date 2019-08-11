@@ -10,23 +10,32 @@ class Population:
         self.players = [Player(NeuralNetwork(4, 8, 1), env) for env in envs]
         self.envs = envs
         self.alive = len(envs)
+        self.stepsSurvived = 0
         self.bestPlayersToKeepFactor = clamp(bestPlayersToKeepFactor, 0, 1)
         self.mutationRate = mutationRate
 
     def update(self):
+        if self.isAlive():
+            self.stepsSurvived += 1
+
         for player in self.players:
             alive = player.alive
             player.update()
             
-        # if player died this time, update counter
-        if alive and not player.alive:
-            self.alive -= 1
-            
-        #if self.alive <= 0:
-        #    self.nextGeneration()
-        # TODO: move outside
-                    
-    def nextGeneration(self):
+            # if player died this time, update counter
+            if alive and not player.alive:
+                self.alive -= 1
+
+    def isAlive(self):
+        return self.alive > 0
+    
+    def render(self):
+        for player in self.players:
+            if player.alive:
+                player.render()
+                return
+    
+    def evolve(self):
         nextGeneration = []
         nPlayersToKeep = len(self.players) * self.bestPlayersToKeepFactor
 
@@ -36,7 +45,7 @@ class Population:
         # calculate total fitness
         totalFitness = self.__calculateTotalFitness()
 
-        for i in len(self.players):
+        for i in range(len(self.players)):
             # pick N best to keep
             newPlayer = None
 
@@ -59,6 +68,14 @@ class Population:
         
         # finish up
         self.players = nextGeneration
+        self.alive = len(self.players)
+        self.stepsSurvived = 0
+    
+    def stats(self):
+        totalFitness = self.__calculateTotalFitness()
+        averageFitness = totalFitness / len(self.players)
+        return "Population survived for {} steps | Total Fitness: {} | Average Fitness: {}".format(
+            self.stepsSurvived, totalFitness, averageFitness)
 
     def __calculateTotalFitness(self):
         return sum([player.fitness for player in self.players])

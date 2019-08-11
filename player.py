@@ -19,9 +19,9 @@ class Player:
     def update(self):
         if (self.alive and self.env):
             #action = self.env.action_space.sample()
-            action = self.brain.predict(self.observation)
+            action = 0 if self.brain.predict(self.observation)[0] < 0 else 1
 
-            observation, reward, done, info = self.env.step(action) #TODO
+            observation, reward, done, info = self.env.step(action)
 
             self.observation = observation
             self.fitness += reward
@@ -30,6 +30,9 @@ class Player:
             if (done):
                 self.alive = False
         return
+
+    def render(self):
+        self.env.render()
 
     def mutate(self, rate):
         self.brain.mutate(rate)
