@@ -1,8 +1,7 @@
 import random
 import math
 
-def clamp(input, min = -1, max = 1):
-    return max(min(input, max), min)
+from helper import clamp
 
 def trigonometricFunction(input):
     return math.tanh(input * math.pi / 2)
@@ -22,9 +21,6 @@ class Layer:
             return 1
         
         return clamp(self.activationFunction(input))
-
-    def copy(self):
-        return Layer(self.size, self.activationFunction)
 
 class NeuralNetwork:
     def __init__(self, sizeIn, sizeHidden, sizeOut, 
@@ -96,7 +92,11 @@ class NeuralNetwork:
         ihWeightsClone = self.__cloneWeights(self.weightsInHidden)
         hoWeightsClone = self.__cloneWeights(self.weightsHiddenOut)
 
-        nnClone = NeuralNetwork(self.inLayer.size, self.hiddenLayer.size, self.outLayer.size, ihWeightsClone, hoWeightsClone)
+        nnClone = NeuralNetwork(self.inLayer.size, self.hiddenLayer.size, self.outLayer.size, 
+            ihWeightsClone, hoWeightsClone, 
+            self.inLayer.activationFunction, 
+            self.hiddenLayer.activationFunction, 
+            self.outLayer.activationFunction)
         
         return nnClone
 
