@@ -1,45 +1,45 @@
-from neural_network import NeuralNetwork
-from player import Player
+import gym
+import time
 
-'''
-nn = NeuralNetwork(4, 8, 2)
-#print(nn.dump())
+from population import Population
 
-for i in range(10):
-    mutations = nn.mutate(0.02)
-    res = nn.predict([1, 2, 0.3, -0.4])
-    print('{},\tmutations: {}'.format(res, mutations))
+start = time.time()
 
-#print(nn.dump())
-'''
+render = False
+verbose = False
 
-momsBrain = NeuralNetwork(4, 8, 2)
-mom = Player(momsBrain, None)
+populationSize = 1000
+episodes = 1000
+maxSteps = 1000
+envs = []
 
-dadsBrain = NeuralNetwork(4, 8, 2)
-dad = Player(dadsBrain, None)
+for _ in range(populationSize):
+    envs.append(gym.make('CartPole-v0'))
 
-baby = Player.makeBaby(mom, dad, None)
+population = Population(envs, solvedFitness=200)
 
-print(baby.dump())
+for episode in range(episodes):
+    if verbose:
+        print("===================================")
+        print("Starting Episode {}:".format(episode))
 
-print(mom.brain.weightsInHidden[0][0])
-print(dad.brain.weightsInHidden[0][0])
-print(baby.brain.weightsInHidden[0][0])
+    for step in range(maxSteps):
+        if population.isAlive():
+            # update
+            population.update()
 
-'''
-A = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-]
-B = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-]
+            if render:
+                population.render()
 
-C = [[(x + y) / 2 for x, y in zip(row1, row2) ] for row1, row2 in zip(A, B)]
+            if verbose and step % 10 == 0:
+                print("Step {}: {} players still alive.".format(step, population.alive))
+        else:
+            # evolve and restart
+            print("Episode: {} | {} ".format(episode + 1, population.stats()))
+            population.evolve()
+            break
 
-print(C)
-'''
+    for env in envs:
+        env.close()
+
+print("Execution finished! Took {} seconds to complete".format(time.time() - start))
