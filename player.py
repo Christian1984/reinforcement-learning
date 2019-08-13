@@ -38,6 +38,9 @@ class Player:
         self.brain.mutate(rate)
         return
 
+    def hasSolvedGym(self, solvedFitness):
+        return self.fitness >= solvedFitness
+
     def dump(self):
         return {
             "alive": self.alive,

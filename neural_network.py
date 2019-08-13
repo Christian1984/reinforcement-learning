@@ -25,9 +25,9 @@ class Layer:
 class NeuralNetwork:
     def __init__(self, sizeIn, sizeHidden, sizeOut, 
         weightsInHidden = None, weightsHiddenOut = None,
-        layerInActivationFunction = linearFunction, 
-        layerHiddenActivationFunction = linearFunction,
-        layerOutActivationFunction = linearFunction):
+        layerInActivationFunction = trigonometricFunction, 
+        layerHiddenActivationFunction = trigonometricFunction,
+        layerOutActivationFunction = trigonometricFunction):
         self.rand = random.Random()
         
         self.inLayer = Layer(sizeIn, layerInActivationFunction)

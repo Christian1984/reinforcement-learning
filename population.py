@@ -6,13 +6,16 @@ from player import Player
 from neural_network import NeuralNetwork
 
 class Population:
-    def __init__(self, envs, bestPlayersToKeepFactor = 0.01, mutationRate = 0.02):
+    def __init__(self, envs, bestPlayersToKeepFactor = 0.01, solvedFitness = None, mutationRate = 0.02):
         self.players = [Player(NeuralNetwork(4, 8, 1), env) for env in envs]
         self.envs = envs
         self.alive = len(envs)
-        self.stepsSurvived = 0
         self.bestPlayersToKeepFactor = clamp(bestPlayersToKeepFactor, 0, 1)
+        self.solvedFitness = solvedFitness
         self.mutationRate = mutationRate
+        
+        self.stepsSurvived = 0
+        self.populationSurvivors = 0
 
     def update(self):
         if self.isAlive():
@@ -36,6 +39,8 @@ class Population:
                 return
     
     def evolve(self):
+        self.populationSurvivors = 0
+
         nextGeneration = []
         nPlayersToKeep = len(self.players) * self.bestPlayersToKeepFactor
 
@@ -49,7 +54,8 @@ class Population:
             # pick N best to keep
             newPlayer = None
 
-            if i < nPlayersToKeep:
+            if i < nPlayersToKeep or self.players[i].hasSolvedGym(self.solvedFitness):
+                self.populationSurvivors += 1
                 newPlayer = Player(self.players[i].brain.clone(), self.envs[i])
             else:
                 # make babies and mutate:
@@ -74,8 +80,8 @@ class Population:
     def stats(self):
         totalFitness = self.__calculateTotalFitness()
         averageFitness = totalFitness / len(self.players)
-        return "Population survived for {} steps | Total Fitness: {} | Average Fitness: {}".format(
-            self.stepsSurvived, totalFitness, averageFitness)
+        return "Population survived for {} steps | Total Fitness: {} | Average Fitness: {} | Survivors from Previous Population: {}".format(
+            self.stepsSurvived, totalFitness, averageFitness, self.populationSurvivors)
 
     def __calculateTotalFitness(self):
         return sum([player.fitness for player in self.players])
