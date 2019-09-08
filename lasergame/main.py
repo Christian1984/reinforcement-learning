@@ -3,7 +3,7 @@ import math
 
 width = 256
 height = 256
-fps = 30
+fps = 120
 
 angle = 0
 
@@ -29,7 +29,8 @@ while True:
 
     screen.fill((0, 0, 0))
     pg.draw.line(screen, (0, 255, 0), 
-        (width / 2, height / 2), ((math.sin(angle) + 1) * width / 2, (math.cos(angle) + 1) * height / 2))
+        (width / 2, height / 2), ((math.sin(angle) + 1) * width / 2, 
+        (math.cos(angle + math.pi) + 1) * height / 2))
     
     fps_gui = font.render(str(int(clock.get_fps())), True, (255, 255, 255))
     screen.blit(fps_gui, (10, 10))
