@@ -15,9 +15,12 @@ def draw_target(surface, pos, radius):
     pg.draw.circle(surface, color_go, pos, radius)
 
 def draw_lasergun(surface, angle, gun_width, gun_length):
-    p1 = pg.math.Vector2(0.5 * width, 0.5 * (height - gun_length))
-    p2 = pg.math.Vector2(0.5 * (width - gun_width), 0.5 * (height + gun_length))
-    p3 = pg.math.Vector2(0.5 * (width + gun_width), 0.5 * (height + gun_length))
+    offset = pg.math.Vector2(0.5 * width, 0.5 * height)
+    angle_deg = 360 * angle / (2 * math.pi)
+
+    p1 = pg.math.Vector2(0, - 0.5 * gun_length).rotate(angle_deg) + offset
+    p2 = pg.math.Vector2(- 0.5 * gun_width, 0.5 * gun_length).rotate(angle_deg) + offset
+    p3 = pg.math.Vector2(0.5 * gun_width, 0.5 * gun_length).rotate(angle_deg) + offset
 
     pg.draw.polygon(surface, color_go, (p1, p2, p3))
 
@@ -52,7 +55,7 @@ while True:
     draw_target(screen, target_pos, 10)
 
     lasergun_angle = angle
-    laser_fires = True
+    laser_fires = False
 
     if (laser_fires):
         draw_laserbeam(screen, lasergun_angle)
