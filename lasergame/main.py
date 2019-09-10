@@ -54,12 +54,14 @@ while True:
 
     screen.fill(color_bg)
 
+    lasergame.update()
+
     target_pos = (int(lasergame.target.x * size), int(lasergame.target.y * size))
     target_radius = int(lasergame.target.radius * size)
     draw_target(screen, target_pos, target_radius)
 
     lasergun_rotation = lasergame.laser.rotation
-    laser_fires = False
+    laser_fires = True
 
     if (laser_fires):
         draw_laserbeam(screen, lasergun_rotation)
