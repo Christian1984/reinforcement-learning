@@ -1,5 +1,6 @@
 import pygame as pg
 import math
+from helper import *
 
 from lasergame import LaserGame
 
@@ -61,7 +62,7 @@ while True:
     draw_target(screen, target_pos, target_radius)
 
     lasergun_rotation = lasergame.laser.rotation
-    laser_fires = True
+    laser_fires = lasergame.laser.fires
 
     if (laser_fires):
         draw_laserbeam(screen, lasergun_rotation)
@@ -70,4 +71,11 @@ while True:
     
     fps_gui = font.render("FPS: {}".format(int(clock.get_fps())), True, color_gui)
     screen.blit(fps_gui, (10, 10))
+
+    debug_gui = font.render("alpha: {}, gamma: {}{}".format(
+            int(rads_to_degs(lasergame.alpha)), 
+            int(rads_to_degs(lasergame.gamma)),
+            ", HIT" if lasergame.hit else ""),
+        True, color_gui)
+    screen.blit(debug_gui, (10, 236))
     pg.display.flip()

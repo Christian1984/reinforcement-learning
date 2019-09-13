@@ -7,12 +7,20 @@ class LaserGame:
         self.laser = Laser()
         self.target = Target()
 
+        self.alpha = 0 #angle between laserbeam and target
+        self.gamma = 0 #angle between center and left/right end of target circle
+        self.hit = False
+
     def update(self):
         self.laser.rotation += 2 * math.pi / 360
 
         if self.laser.rotation > 2 * math.pi:
             self.laser.rotation = 0
 
+        self.calculate_angles()
+        self.hit = self.alpha <= self.gamma
+        
+    def calculate_angles(self):
         lx = math.sin(self.laser.rotation)
         ly = -math.cos(self.laser.rotation)
 
@@ -21,10 +29,7 @@ class LaserGame:
 
         dot = lx * ltx + ly + lty
         det = lx * lty - ly * ltx
-        alpha = abs(math.atan2(det, dot))
+        self.alpha = abs(math.atan2(det, dot))
 
         d = math.sqrt(ltx * ltx + lty + lty)
-        gamma = math.asin(self.target.radius / d)
-        
-        if (alpha <= gamma):
-            print("HIT!")
+        self.gamma = math.asin(self.target.radius / d)
