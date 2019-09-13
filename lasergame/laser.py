@@ -7,8 +7,8 @@ class Laser:
         self.rotation_velocity = rotation_velocity
 
         self.energy = 1
-        self.energy_depletion = 0.1
-        self.energy_recharge = 0.1
+        self.energy_depletion = 0.05
+        self.energy_recharge = 0.01
         self.recharges = False
         self.fires = False
     
