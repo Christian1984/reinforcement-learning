@@ -1,4 +1,5 @@
 import math
+from helper import *
 
 class Laser:
     def __init__(self, initial_rotation = 0, rotation_velocity = 2 * math.pi / 360):
@@ -8,3 +9,4 @@ class Laser:
     
     def rotate(self, clockwise):
         self.rotation += self.rotation_velocity if clockwise else -self.rotation_velocity
+        clamp(self.rotation, 0, 2 * math.pi)

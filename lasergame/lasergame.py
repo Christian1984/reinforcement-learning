@@ -1,35 +1,37 @@
 from laser import Laser
-from target import Target
+from ufo import Ufo
 import math
 
 class LaserGame:
     def __init__(self):
         self.laser = Laser()
-        self.target = Target()
+        self.ufo = Ufo()
 
-        self.alpha = 0 #angle between laserbeam and target
-        self.gamma = 0 #angle between center and left/right end of target circle
+        self.alpha = 0 #angle between laserbeam and ufo
+        self.gamma = 0 #angle between center and left/right end of ufo circle
         self.hit = False
+    
+    def rotate_laser(self, clockwise):
+        self.laser.rotate(clockwise)
+    
+    def set_ufo_target(self, x, y):
+        self.ufo.set_target_pos(x, y)
 
     def update(self):
-        self.laser.rotation += 2 * math.pi / 360
-
-        if self.laser.rotation > 2 * math.pi:
-            self.laser.rotation = 0
-
-        self.calculate_angles()
+        self.ufo.move()
+        self.__calculate_angles()
         self.hit = self.alpha <= self.gamma
         
-    def calculate_angles(self):
+    def __calculate_angles(self):
         lx = math.sin(self.laser.rotation)
         ly = -math.cos(self.laser.rotation)
 
-        ltx = self.target.x - 0.5
-        lty = self.target.y - 0.5
+        ltx = self.ufo.x - 0.5
+        lty = self.ufo.y - 0.5
 
-        dot = lx * ltx + ly + lty
+        dot = lx * ltx + ly * lty
         det = lx * lty - ly * ltx
         self.alpha = abs(math.atan2(det, dot))
 
-        d = math.sqrt(ltx * ltx + lty + lty)
-        self.gamma = math.asin(self.target.radius / d)
+        d = math.sqrt(ltx * ltx + lty * lty)
+        self.gamma = math.asin(self.ufo.radius / d)

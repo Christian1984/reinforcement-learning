@@ -13,7 +13,7 @@ color_bg = (0, 0, 0)
 color_go = (0, 255, 0)
 color_gui = (255, 0, 0)
 
-def draw_target(surface, pos, radius):
+def draw_ufo(surface, pos, radius):
     pg.draw.circle(surface, color_go, pos, radius)
 
 def draw_lasergun(surface, angle, gun_width, gun_length):
@@ -41,25 +41,35 @@ font = pg.font.Font(None, 20)
 lasergame = LaserGame()
 
 while True:
+    clock.tick(fps)
+
+    #catch and process input
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             exit()
+        #elif event.type == pg.KEYDOWN:
+        #    if event.key == pg.K_LEFT:
+        #        lasergame.rotate_laser(False)
+        #    if event.key == pg.K_RIGHT:
+        #        lasergame.rotate_laser(True)
 
-    angle += 2 * math.pi / 360
-
-    if angle > 2 * math.pi:
-        angle = 0
+    keys = pg.key.get_pressed()
+    if keys[pg.K_LEFT]:
+        lasergame.rotate_laser(False)
+    if keys[pg.K_RIGHT]:
+        lasergame.rotate_laser(True)
     
-    clock.tick(fps)
 
-    screen.fill(color_bg)
-
+    #update internal game logic
     lasergame.update()
 
-    target_pos = (int(lasergame.target.x * size), int(lasergame.target.y * size))
-    target_radius = int(lasergame.target.radius * size)
-    draw_target(screen, target_pos, target_radius)
+    #render
+    screen.fill(color_bg)
+
+    ufo_pos = (int(lasergame.ufo.x * size), int(lasergame.ufo.y * size))
+    ufo_radius = int(lasergame.ufo.radius * size)
+    draw_ufo(screen, ufo_pos, ufo_radius)
 
     lasergun_rotation = lasergame.laser.rotation
     laser_fires = lasergame.laser.fires
