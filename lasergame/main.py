@@ -48,11 +48,6 @@ while True:
         if event.type == pg.QUIT:
             pg.quit()
             exit()
-        #elif event.type == pg.KEYDOWN:
-        #    if event.key == pg.K_LEFT:
-        #        lasergame.rotate_laser(False)
-        #    if event.key == pg.K_RIGHT:
-        #        lasergame.rotate_laser(True)
 
     keys = pg.key.get_pressed()
     if keys[pg.K_LEFT]:
@@ -62,6 +57,10 @@ while True:
     if keys[pg.K_SPACE]:
         lasergame.fire_laser()
     
+    mouse_buttons = pg.mouse.get_pressed()
+    if mouse_buttons[0]:
+        mouse_x, mouse_y = pg.mouse.get_pos()
+        lasergame.set_ufo_target(mouse_x / size, mouse_y / size)
 
     #update internal game logic
     lasergame.update()
