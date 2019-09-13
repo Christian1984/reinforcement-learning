@@ -54,4 +54,4 @@ class LaserGame:
         self.alpha = abs(math.atan2(det, dot))
 
         d = math.sqrt(ltx * ltx + lty * lty)
-        self.gamma = math.asin(self.ufo.radius / d)
+        self.gamma = math.asin(self.ufo.radius / d) if d > self.ufo.radius else 2 * math.pi
