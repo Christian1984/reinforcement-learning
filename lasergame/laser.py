@@ -2,8 +2,8 @@ import math
 from helper import *
 
 class Laser:
-    def __init__(self, initial_rotation = 0, rotation_velocity = 2 * math.pi / 360,
-        energy_depletion = 0.05, energy_recharge = 0.025, power = 0.01):
+    def __init__(self, initial_rotation = 0, rotation_velocity = 6 * math.pi / 360,
+        energy_depletion = 0.05, energy_recharge = 0.025, power = 0.02):
         self.rotation = initial_rotation
         self.rotation_velocity = rotation_velocity
 

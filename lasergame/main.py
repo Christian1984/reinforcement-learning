@@ -1,5 +1,6 @@
 import pygame as pg
 import math
+import random
 from helper import *
 
 from lasergame import LaserGame
@@ -12,6 +13,8 @@ angle = 0
 color_bg = (0, 0, 0)
 color_go = (0, 255, 0)
 color_gui = (255, 0, 0)
+
+ufo_random_input = True
 
 def draw_ufo(surface, pos, radius):
     pg.draw.circle(surface, color_go, pos, radius)
@@ -72,6 +75,9 @@ while True:
     if mouse_buttons[0]:
         mouse_x, mouse_y = pg.mouse.get_pos()
         lasergame.set_ufo_target(mouse_x / size, mouse_y / size)
+
+    if (ufo_random_input and lasergame.ufo.target_reached()):
+        lasergame.set_ufo_target(random.random(), random.random())
 
     #update internal game logic
     lasergame.update()

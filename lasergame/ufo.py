@@ -1,5 +1,5 @@
 class Ufo:
-    def __init__(self, x = 0.5, y = 0.75, radius = 0.05, velocity = 0.01, hyperdrive_chargerate = 0.001):
+    def __init__(self, x = 0.5, y = 0.75, radius = 0.05, velocity = 0.005, hyperdrive_chargerate = 0.001):
         self.x = x
         self.y = y
         self.target_x = x
@@ -35,6 +35,9 @@ class Ufo:
     
     def die(self):
         self.alive = False
+    
+    def target_reached(self):
+        return self.target_x == self.x and self.target_y == self.y
 
     def __apply_velocity(self, pos, target_pos):
         if abs(pos - target_pos) < self.velocity:
