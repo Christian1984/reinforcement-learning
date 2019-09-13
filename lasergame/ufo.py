@@ -5,7 +5,7 @@ class Ufo:
         self.target_pos = (x, y)
         self.radius = radius
 
-    def move(self):
+    def update(self):
         #TODO: move towards ufo until distance < sqrt(2v^2)
         return
     

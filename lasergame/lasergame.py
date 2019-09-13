@@ -14,13 +14,17 @@ class LaserGame:
     def rotate_laser(self, clockwise):
         self.laser.rotate(clockwise)
     
+    def fire_laser(self):
+        self.laser.fire()
+    
     def set_ufo_target(self, x, y):
         self.ufo.set_target_pos(x, y)
 
     def update(self):
-        self.ufo.move()
+        self.ufo.update()
+        self.laser.update()
         self.__calculate_angles()
-        self.hit = self.alpha <= self.gamma
+        self.hit = self.laser.fires and self.alpha <= self.gamma
         
     def __calculate_angles(self):
         lx = math.sin(self.laser.rotation)

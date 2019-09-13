@@ -59,6 +59,8 @@ while True:
         lasergame.rotate_laser(False)
     if keys[pg.K_RIGHT]:
         lasergame.rotate_laser(True)
+    if keys[pg.K_SPACE]:
+        lasergame.fire_laser()
     
 
     #update internal game logic
@@ -82,9 +84,10 @@ while True:
     fps_gui = font.render("FPS: {}".format(int(clock.get_fps())), True, color_gui)
     screen.blit(fps_gui, (10, 10))
 
-    debug_gui = font.render("alpha: {}, gamma: {}{}".format(
+    debug_gui = font.render("alpha: {}, gamma: {}, energy: {}%{}".format(
             int(rads_to_degs(lasergame.alpha)), 
             int(rads_to_degs(lasergame.gamma)),
+            int(lasergame.laser.energy * 100),
             ", HIT" if lasergame.hit else ""),
         True, color_gui)
     screen.blit(debug_gui, (10, 236))
