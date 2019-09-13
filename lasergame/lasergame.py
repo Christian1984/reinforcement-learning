@@ -4,6 +4,12 @@ import math
 
 class LaserGame:
     def __init__(self):
+        self.won_by_ufo = 0
+        self.won_by_laser = 0
+
+        self.reset()
+    
+    def reset(self):
         self.laser = Laser()
         self.ufo = Ufo()
 
@@ -25,7 +31,17 @@ class LaserGame:
         self.laser.update()
         self.__calculate_angles()
         self.hit = self.laser.fires and self.alpha <= self.gamma
+
+        if (self.hit):
+            self.ufo.receive_damage(self.laser.power)
         
+        if(not self.ufo.alive):
+            self.won_by_laser += 1
+            self.reset()
+        elif(self.ufo.jumped):
+            self.won_by_ufo += 1
+            self.reset()
+
     def __calculate_angles(self):
         lx = math.sin(self.laser.rotation)
         ly = -math.cos(self.laser.rotation)

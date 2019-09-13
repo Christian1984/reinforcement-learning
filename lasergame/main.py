@@ -31,6 +31,17 @@ def draw_laserbeam(surface, angle):
         (size / 2, size / 2), ((math.sin(angle) + 0.5) * size, 
         (math.cos(angle + math.pi) + 0.5) * size))
 
+def draw_status_bar(surface, x, y, width, height, value, title, title_size = 16):
+    font = pg.font.Font(None, title_size)
+    label = font.render(title, True, color_gui)
+    screen.blit(label, (x, y))
+
+    rect_bg = pg.Rect(x, y + title_size, width, height)
+    pg.draw.rect(surface, (50, 50, 50), rect_bg)
+
+    rect_bg = pg.Rect(x, y + title_size, width * value, height)
+    pg.draw.rect(surface, color_gui, rect_bg)
+
 pg.init()
 
 clock = pg.time.Clock()
@@ -90,4 +101,12 @@ while True:
             ", HIT" if lasergame.hit else ""),
         True, color_gui)
     screen.blit(debug_gui, (10, 236))
+    
+    won_by_gui = font.render("LASER - {} : {} - UFO".format(lasergame.won_by_laser, lasergame.won_by_ufo), True, color_gui)
+    screen.blit(won_by_gui, (size / 2, 10))
+
+    draw_status_bar(screen, 10, 50, 30, 5, lasergame.laser.energy, "Laser Charge")
+    draw_status_bar(screen, 10, 80, 30, 5, lasergame.ufo.hull_integrity, "UFO Health")
+    draw_status_bar(screen, 10, 110, 30, 5, lasergame.ufo.hyperdrive_charge, "UFO Hyperdrive")
+
     pg.display.flip()
